@@ -456,7 +456,7 @@
         </div>
         <p class="cart-shipping-note">Taxes and shipping calculated at checkout.</p>
         <div class="cart-actions">
-          <button class="checkout-btn">Proceed to Checkout →</button>
+          <button class="checkout-btn" (click)="openCheckout()">Proceed to Checkout →</button>
           <button class="clear-cart-btn-link" (click)="clearCart()">Clear Cart</button>
         </div>
       </div>
@@ -470,6 +470,303 @@
     }
   </div>
 </div>
+
+<!-- ─── Checkout Page ─── -->
+@if (isCheckoutOpen()) {
+  <div class="checkout-overlay">
+    @if (!orderPlaced()) {
+      <div class="checkout-page">
+
+        <!-- Checkout Header -->
+        <div class="checkout-header">
+          <button class="checkout-back-btn" (click)="closeCheckout()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back to Shop
+          </button>
+          <div class="checkout-brand"><span>💎</span> AURA</div>
+          <div class="checkout-secure">🔒 Secure Checkout</div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="checkout-progress">
+          <div class="progress-step active"><span>1</span> Contact</div>
+          <div class="progress-line"></div>
+          <div class="progress-step active"><span>2</span> Shipping</div>
+          <div class="progress-line"></div>
+          <div class="progress-step active"><span>3</span> Payment</div>
+        </div>
+
+        <div class="checkout-body">
+
+          <!-- ── Left: Form ── -->
+          <div class="checkout-form-col">
+
+            <!-- Contact -->
+            <section class="checkout-section">
+              <h3 class="checkout-section-title">
+                <span class="section-num">1</span> Contact Information
+              </h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="req">*</span></label>
+                  <input class="form-input" type="email" [value]="checkoutForm().email"
+                    (input)="updateCheckoutField('email', $any($event.target).value)"
+                    placeholder="you@example.com" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input class="form-input" type="tel" [value]="checkoutForm().phone"
+                    (input)="updateCheckoutField('phone', $any($event.target).value)"
+                    placeholder="+1 (555) 000-0000" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Shipping Address -->
+            <section class="checkout-section">
+              <h3 class="checkout-section-title">
+                <span class="section-num">2</span> Shipping Address
+              </h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">First Name <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().firstName"
+                    (input)="updateCheckoutField('firstName', $any($event.target).value)"
+                    placeholder="John" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last Name <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().lastName"
+                    (input)="updateCheckoutField('lastName', $any($event.target).value)"
+                    placeholder="Doe" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Street Address <span class="req">*</span></label>
+                <input class="form-input" type="text" [value]="checkoutForm().address"
+                  (input)="updateCheckoutField('address', $any($event.target).value)"
+                  placeholder="123 Main Street, Apt 4B" />
+              </div>
+              <div class="form-row form-row-3">
+                <div class="form-group">
+                  <label class="form-label">City <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().city"
+                    (input)="updateCheckoutField('city', $any($event.target).value)"
+                    placeholder="New York" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">State</label>
+                  <input class="form-input" type="text" [value]="checkoutForm().state"
+                    (input)="updateCheckoutField('state', $any($event.target).value)"
+                    placeholder="NY" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">ZIP Code <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().zip"
+                    (input)="updateCheckoutField('zip', $any($event.target).value)"
+                    placeholder="10001" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Shipping Method -->
+            <section class="checkout-section">
+              <h3 class="checkout-section-title">
+                <span class="section-num">3</span> Shipping Method
+              </h3>
+              <div class="shipping-options">
+                <label class="shipping-option" [class.selected]="checkoutForm().shippingMethod === 'standard'">
+                  <input type="radio" name="shipping" value="standard"
+                    [checked]="checkoutForm().shippingMethod === 'standard'"
+                    (change)="updateCheckoutField('shippingMethod', 'standard')" />
+                  <div class="shipping-option-content">
+                    <div class="shipping-option-left">
+                      <span class="shipping-icon">📦</span>
+                      <div>
+                        <strong>Standard Shipping</strong>
+                        <span>5–7 business days</span>
+                      </div>
+                    </div>
+                    <span class="shipping-price-tag">
+                      {{ cartTotal() >= 50 ? 'FREE' : '$5.99' }}
+                    </span>
+                  </div>
+                </label>
+                <label class="shipping-option" [class.selected]="checkoutForm().shippingMethod === 'express'">
+                  <input type="radio" name="shipping" value="express"
+                    [checked]="checkoutForm().shippingMethod === 'express'"
+                    (change)="updateCheckoutField('shippingMethod', 'express')" />
+                  <div class="shipping-option-content">
+                    <div class="shipping-option-left">
+                      <span class="shipping-icon">⚡</span>
+                      <div>
+                        <strong>Express Shipping</strong>
+                        <span>1–2 business days</span>
+                      </div>
+                    </div>
+                    <span class="shipping-price-tag">$14.99</span>
+                  </div>
+                </label>
+              </div>
+            </section>
+
+            <!-- Payment -->
+            <section class="checkout-section">
+              <h3 class="checkout-section-title">
+                <span class="section-num">4</span> Payment Details
+              </h3>
+
+              <!-- Card Preview -->
+              <div class="card-preview">
+                <div class="card-preview-top">
+                  <span class="card-chip-icon">💳</span>
+                  <span class="card-brand-label">AURA PAY</span>
+                </div>
+                <div class="card-preview-number">
+                  {{ checkoutForm().cardNumber || '•••• •••• •••• ••••' }}
+                </div>
+                <div class="card-preview-bottom">
+                  <span>{{ checkoutForm().cardName || 'YOUR NAME' }}</span>
+                  <span>{{ checkoutForm().cardExpiry || 'MM / YY' }}</span>
+                </div>
+              </div>
+
+              <div class="payment-logos">
+                <span title="Visa">💳</span>
+                <span title="Mastercard">🏦</span>
+                <span title="Apple Pay">📱</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Card Number <span class="req">*</span></label>
+                <input class="form-input" type="text" [value]="checkoutForm().cardNumber"
+                  (input)="updateCheckoutField('cardNumber', $any($event.target).value)"
+                  placeholder="1234 5678 9012 3456" maxlength="19" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Expiry Date <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().cardExpiry"
+                    (input)="updateCheckoutField('cardExpiry', $any($event.target).value)"
+                    placeholder="MM / YY" maxlength="7" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CVV <span class="req">*</span></label>
+                  <input class="form-input" type="text" [value]="checkoutForm().cardCvv"
+                    (input)="updateCheckoutField('cardCvv', $any($event.target).value)"
+                    placeholder="•••" maxlength="4" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Name on Card <span class="req">*</span></label>
+                <input class="form-input" type="text" [value]="checkoutForm().cardName"
+                  (input)="updateCheckoutField('cardName', $any($event.target).value)"
+                  placeholder="John Doe" />
+              </div>
+            </section>
+
+            <!-- Mobile Place Order -->
+            <button class="place-order-btn place-order-mobile" (click)="placeOrder()">
+              🔒 Place Order — {{ orderTotal() | currency:'USD':'symbol':'1.2-2' }}
+            </button>
+          </div>
+
+          <!-- ── Right: Order Summary ── -->
+          <div class="checkout-summary-col">
+            <div class="order-summary-card">
+              <h3 class="summary-title">Order Summary</h3>
+
+              <div class="summary-items">
+                @for (item of cart(); track item.product.id) {
+                  <div class="summary-item">
+                    <div class="summary-img-wrap">
+                      <img [src]="item.product.imageUrl" [alt]="item.product.name" class="summary-item-img" />
+                      <span class="summary-qty-badge">{{ item.quantity }}</span>
+                    </div>
+                    <div class="summary-item-info">
+                      <span class="summary-item-name">{{ item.product.name }}</span>
+                      <span class="summary-item-cat">{{ item.product.categoryName }}</span>
+                    </div>
+                    <span class="summary-item-price">
+                      {{ (item.product.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="summary-coupon">
+                <input class="coupon-input" type="text" placeholder="Promo code" />
+                <button class="coupon-btn">Apply</button>
+              </div>
+
+              <div class="summary-divider"></div>
+              <div class="summary-line">
+                <span>Subtotal</span>
+                <span>{{ cartTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="summary-line">
+                <span>Shipping</span>
+                <span [class.free-shipping]="shippingCost() === 0">
+                  {{ shippingCost() === 0 ? 'FREE' : (shippingCost() | currency:'USD':'symbol':'1.2-2') }}
+                </span>
+              </div>
+              <div class="summary-line">
+                <span>Tax (8%)</span>
+                <span>{{ taxAmount() | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-total-line">
+                <span>Total</span>
+                <span>{{ orderTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+
+              <button class="place-order-btn" (click)="placeOrder()">
+                🔒 Place Order
+              </button>
+
+              <div class="security-badges">
+                <span>🔒 SSL</span>
+                <span>💳 Encrypted</span>
+                <span>✓ PCI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    } @else {
+
+      <!-- ── Order Success ── -->
+      <div class="order-success-page">
+        <div class="success-card">
+          <div class="success-icon-wrap">
+            <svg class="success-ring" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle class="ring-track" cx="50" cy="50" r="44"/>
+              <circle class="ring-fill" cx="50" cy="50" r="44"/>
+            </svg>
+            <span class="success-check">✓</span>
+          </div>
+          <h2 class="success-title">Order Confirmed! 🎉</h2>
+          <p class="success-sub">
+            Thank you{{ checkoutForm().firstName ? ', ' + checkoutForm().firstName : '' }}!
+            Your order has been placed successfully.
+          </p>
+          <div class="success-order-num">Order # {{ orderId() }}</div>
+          <p class="success-eta">
+            📦 Estimated delivery: <strong>{{ deliveryDate() }}</strong>
+          </p>
+          <p class="success-email-note">
+            A confirmation email will be sent to
+            <strong>{{ checkoutForm().email || 'your email' }}</strong>
+          </p>
+          <button class="success-continue-btn" (click)="closeCheckout()">
+            Continue Shopping →
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
 
 <!-- ─── Product Details Modal ─── -->
 @if (selectedProduct(); as product) {

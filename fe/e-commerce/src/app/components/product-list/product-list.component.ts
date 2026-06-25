@@ -137,4 +137,62 @@ export class ProductListComponent {
   protected toggleCart(open: boolean): void { this.isCartOpen.set(open); }
   protected openProductDetails(product: Product): void { this.selectedProduct.set(product); }
   protected closeProductDetails(): void { this.selectedProduct.set(null); }
+
+  // ── Checkout ──────────────────────────────────────────────────────────────
+  protected readonly isCheckoutOpen = signal(false);
+  protected readonly orderPlaced = signal(false);
+
+  protected readonly checkoutForm = signal({
+    email: '', phone: '',
+    firstName: '', lastName: '',
+    address: '', city: '', state: '', zip: '',
+    shippingMethod: 'standard',
+    cardNumber: '', cardExpiry: '', cardCvv: '', cardName: ''
+  });
+
+  protected readonly shippingCost = computed(() => {
+    if (this.checkoutForm().shippingMethod === 'express') return 14.99;
+    return this.cartTotal() >= 50 ? 0 : 5.99;
+  });
+
+  protected readonly taxAmount = computed(() =>
+    Math.round(this.cartTotal() * 0.08 * 100) / 100
+  );
+
+  protected readonly orderTotal = computed(() =>
+    this.cartTotal() + this.shippingCost() + this.taxAmount()
+  );
+
+  protected updateCheckoutField(field: string, value: string): void {
+    this.checkoutForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  protected openCheckout(): void {
+    this.isCartOpen.set(false);
+    this.orderPlaced.set(false);
+    this.isCheckoutOpen.set(true);
+  }
+
+  protected closeCheckout(): void {
+    this.isCheckoutOpen.set(false);
+    this.orderPlaced.set(false);
+  }
+
+  protected placeOrder(): void {
+    this.orderPlaced.set(true);
+    this.cart.set([]);
+  }
+
+  protected readonly orderId = signal(this.newOrderId());
+
+  private newOrderId(): string {
+    return 'AURA-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+
+  protected deliveryDate(): string {
+    const days = this.checkoutForm().shippingMethod === 'express' ? 2 : 6;
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
 }
