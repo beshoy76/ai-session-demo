@@ -1,0 +1,265 @@
+<header class="store-header">
+  <div class="header-container">
+    <div class="brand">
+      <span class="brand-logo">💎</span>
+      <h1 class="brand-name">AURA</h1>
+    </div>
+
+    <div class="search-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        id="product-search-input"
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="Search products..."
+        aria-label="Search products"
+      />
+      @if (searchQuery()) {
+        <button class="clear-search-btn" (click)="searchQuery.set('')" aria-label="Clear search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <button id="cart-toggle-button" class="cart-trigger" (click)="toggleCart(true)" aria-label="Open shopping cart">
+      <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      @if (cartCount() > 0) {
+        <span class="cart-badge animate-scale-up">{{ cartCount() }}</span>
+      }
+    </button>
+  </div>
+</header>
+
+<main class="store-content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="hero-text-wrapper">
+      <span class="hero-tag">EXCLUSIVE SUMMER DROP</span>
+      <h2 class="hero-title">Refined Minimalism <br> For Daily Life</h2>
+      <p class="hero-subtitle">Meticulously designed lifestyle essentials blending clean Nordic design with state-of-the-art functionality.</p>
+    </div>
+  </section>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="categories-wrapper">
+      @for (category of categories(); track category) {
+        <button
+          [id]="'category-btn-' + category.toLowerCase()"
+          class="category-pill"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+
+    <div class="sort-wrapper">
+      <label for="sort-dropdown" class="sort-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="21" y1="10" x2="7" y2="10"></line>
+          <line x1="21" y1="6" x2="3" y2="6"></line>
+          <line x1="21" y1="14" x2="11" y2="14"></line>
+          <line x1="21" y1="18" x2="15" y2="18"></line>
+        </svg>
+        Sort
+      </label>
+      <select id="sort-dropdown" [value]="sortBy()" (change)="onSortChange($event)" aria-label="Sort products">
+        <option value="featured">Featured</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Active Filters Summary -->
+  @if (selectedCategory() !== 'All' || searchQuery()) {
+    <div class="active-filters-summary">
+      <span class="summary-text">
+        Showing {{ filteredProducts().length }} product{{ filteredProducts().length === 1 ? '' : 's' }}
+        @if (selectedCategory() !== 'All') { in <strong>{{ selectedCategory() }}</strong> }
+        @if (searchQuery()) { matching "<strong>{{ searchQuery() }}</strong>" }
+      </span>
+      <button class="reset-filters-link" (click)="selectedCategory.set('All'); searchQuery.set('')">
+        Clear filters
+      </button>
+    </div>
+  }
+
+  <!-- Products Grid -->
+  @if (filteredProducts().length > 0) {
+    <div class="products-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <article
+          [id]="'product-card-' + product.id"
+          class="product-card"
+          (click)="openProductDetails(product)"
+        >
+          <!-- Image Section -->
+          <div class="product-card-image-wrapper">
+            <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" class="product-card-image" />
+            <button
+              [id]="'quick-add-btn-' + product.id"
+              class="quick-add-btn"
+              (click)="addToCart(product, $event)"
+              aria-label="Add to cart"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add to Cart</span>
+            </button>
+          </div>
+
+          <!-- Description Section -->
+          <div class="product-card-info">
+            <span class="product-card-category">{{ product.categoryName }}</span>
+            <h3 class="product-card-title">{{ product.name }}</h3>
+            <div class="product-card-footer">
+              <span class="product-card-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+              <span class="view-details-txt">View details →</span>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h3 class="empty-title">No products found</h3>
+      <p class="empty-description">We couldn't find any products matching your current filters.</p>
+      <button class="empty-reset-btn" (click)="selectedCategory.set('All'); searchQuery.set('')">Reset Filters</button>
+    </div>
+  }
+</main>
+
+<!-- Cart Sidebar Drawer -->
+<div
+  id="cart-drawer-overlay"
+  class="cart-drawer-overlay"
+  [class.open]="isCartOpen()"
+  (click)="toggleCart(false)"
+>
+  <div class="cart-drawer" (click)="$event.stopPropagation()">
+    <div class="cart-drawer-header">
+      <h2>Shopping Cart</h2>
+      <button id="close-cart-btn" class="close-cart-btn" (click)="toggleCart(false)" aria-label="Close cart">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    @if (cart().length > 0) {
+      <div class="cart-items-container">
+        @for (item of cart(); track item.product.id) {
+          <div class="cart-item">
+            <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image" />
+
+            <div class="cart-item-details">
+              <div class="cart-item-meta">
+                <span class="cart-item-category">{{ item.product.categoryName }}</span>
+                <h4 class="cart-item-title">{{ item.product.name }}</h4>
+              </div>
+
+              <div class="cart-item-controls">
+                <div class="quantity-selector">
+                  <button class="qty-btn" (click)="updateQuantity(item.product.id, -1)" aria-label="Decrease quantity">-</button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button class="qty-btn" (click)="updateQuantity(item.product.id, 1)" aria-label="Increase quantity">+</button>
+                </div>
+                <span class="cart-item-subtotal">{{ (item.product.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <button class="cart-item-remove" (click)="removeFromCart(item.product.id)" aria-label="Remove item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="cart-drawer-footer">
+        <div class="cart-summary-row">
+          <span>Subtotal</span>
+          <strong class="cart-summary-total">{{ cartTotal() | currency:'USD':'symbol':'1.2-2' }}</strong>
+        </div>
+        <p class="cart-shipping-note">Taxes and shipping calculated at checkout.</p>
+
+        <div class="cart-actions">
+          <button class="checkout-btn">Proceed to Checkout</button>
+          <button class="clear-cart-btn-link" (click)="clearCart()">Clear Cart</button>
+        </div>
+      </div>
+    } @else {
+      <div class="cart-empty-state">
+        <span class="cart-empty-icon">🛒</span>
+        <h3>Your cart is empty</h3>
+        <p>Start adding premium products to make it full!</p>
+        <button class="cart-shop-btn" (click)="toggleCart(false)">Continue Shopping</button>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Product Details Modal Dialog -->
+@if (selectedProduct(); as product) {
+  <div id="product-details-modal" class="modal-overlay" (click)="closeProductDetails()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <button class="modal-close-btn" (click)="closeProductDetails()" aria-label="Close product details">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-grid">
+        <!-- Gallery -->
+        <div class="modal-gallery">
+          <img [src]="product.imageUrl" [alt]="product.name" class="modal-main-image" />
+        </div>
+
+        <!-- Info -->
+        <div class="modal-info">
+          <span class="modal-category">{{ product.categoryName }}</span>
+          <h2 class="modal-title">{{ product.name }}</h2>
+
+          <div class="modal-price-row">
+            <span class="modal-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <p class="modal-description">{{ product.description }}</p>
+
+          <div class="modal-actions">
+            <button
+              id="modal-add-to-cart-btn"
+              class="modal-add-to-cart-btn"
+              (click)="addToCart(product); closeProductDetails()"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
