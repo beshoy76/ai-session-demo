@@ -8,7 +8,7 @@ namespace ECommerceBE.APIs.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly      ApplicationContext _context;
+        private readonly ApplicationContext _context;
 
         public ProductsController(ApplicationContext context)
         {

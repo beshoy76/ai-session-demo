@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 
 export interface Product {
@@ -27,20 +28,28 @@ export interface CartItem {
 export class ProductListComponent {
   private productService = inject(ProductService);
 
-  protected readonly products = toSignal(this.productService.getProducts(), { initialValue: [] as Product[] });
+  private productsLoaded = signal(false);
 
-  // Filters State
+  protected readonly products = toSignal(
+    this.productService.getProducts().pipe(tap(() => this.productsLoaded.set(true))),
+    { initialValue: [] as Product[] }
+  );
+
+  protected readonly isLoading = computed(() => !this.productsLoaded());
+
+  protected readonly activeNav = signal<string>('home');
+  protected readonly skeletonItems = [1, 2, 3, 4, 5, 6];
+
+  // Filters
   protected readonly searchQuery = signal<string>('');
   protected readonly selectedCategory = signal<string>('All');
   protected readonly sortBy = signal<string>('featured');
 
-  // Categories derived from loaded products
   protected readonly categories = computed(() => {
     const list = new Set(this.products().map(p => p.categoryName));
     return ['All', ...Array.from(list)];
   });
 
-  // Filtered & Sorted Products
   protected readonly filteredProducts = computed(() => {
     let result = [...this.products()];
 
@@ -58,93 +67,74 @@ export class ProductListComponent {
       result = result.filter(p => p.categoryName === category);
     }
 
-    const sortOption = this.sortBy();
-    if (sortOption === 'price-low') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortOption === 'price-high') {
-      result.sort((a, b) => b.price - a.price);
-    }
+    if (this.sortBy() === 'price-low') result.sort((a, b) => a.price - b.price);
+    else if (this.sortBy() === 'price-high') result.sort((a, b) => b.price - a.price);
 
     return result;
   });
 
-  // Shopping Cart State
+  // Cart
   protected readonly cart = signal<CartItem[]>([]);
   protected readonly isCartOpen = signal<boolean>(false);
+  protected readonly selectedProduct = signal<Product | null>(null);
 
   protected readonly cartCount = computed(() =>
     this.cart().reduce((sum, item) => sum + item.quantity, 0)
   );
 
   protected readonly cartTotal = computed(() =>
-    this.cart().reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+    this.cart().reduce((sum, item) => sum + item.product.price * item.quantity, 0)
   );
 
-  protected readonly selectedProduct = signal<Product | null>(null);
+  protected setActiveNav(nav: string): void {
+    this.activeNav.set(nav);
+    if (nav === 'products') {
+      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   protected onSearchInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchQuery.set(input.value);
+    this.searchQuery.set((event.target as HTMLInputElement).value);
   }
 
   protected selectCategory(category: string): void {
     this.selectedCategory.set(category);
+    document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
   }
 
   protected onSortChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.sortBy.set(select.value);
+    this.sortBy.set((event.target as HTMLSelectElement).value);
   }
 
   protected addToCart(product: Product, event?: Event): void {
     if (event) event.stopPropagation();
-
     const currentCart = [...this.cart()];
-    const existingIndex = currentCart.findIndex(item => item.product.id === product.id);
-
-    if (existingIndex > -1) {
-      currentCart[existingIndex] = {
-        ...currentCart[existingIndex],
-        quantity: currentCart[existingIndex].quantity + 1
-      };
+    const idx = currentCart.findIndex(i => i.product.id === product.id);
+    if (idx > -1) {
+      currentCart[idx] = { ...currentCart[idx], quantity: currentCart[idx].quantity + 1 };
     } else {
       currentCart.push({ product, quantity: 1 });
     }
-
     this.cart.set(currentCart);
   }
 
   protected removeFromCart(productId: string): void {
-    this.cart.set(this.cart().filter(item => item.product.id !== productId));
+    this.cart.set(this.cart().filter(i => i.product.id !== productId));
   }
 
   protected updateQuantity(productId: string, delta: number): void {
     const currentCart = [...this.cart()];
-    const index = currentCart.findIndex(item => item.product.id === productId);
-    if (index > -1) {
-      const newQty = currentCart[index].quantity + delta;
-      if (newQty <= 0) {
-        currentCart.splice(index, 1);
-      } else {
-        currentCart[index] = { ...currentCart[index], quantity: newQty };
-      }
+    const idx = currentCart.findIndex(i => i.product.id === productId);
+    if (idx > -1) {
+      const newQty = currentCart[idx].quantity + delta;
+      if (newQty <= 0) currentCart.splice(idx, 1);
+      else currentCart[idx] = { ...currentCart[idx], quantity: newQty };
       this.cart.set(currentCart);
     }
   }
 
-  protected clearCart(): void {
-    this.cart.set([]);
-  }
-
-  protected toggleCart(isOpen: boolean): void {
-    this.isCartOpen.set(isOpen);
-  }
-
-  protected openProductDetails(product: Product): void {
-    this.selectedProduct.set(product);
-  }
-
-  protected closeProductDetails(): void {
-    this.selectedProduct.set(null);
-  }
+  protected clearCart(): void { this.cart.set([]); }
+  protected toggleCart(open: boolean): void { this.isCartOpen.set(open); }
+  protected openProductDetails(product: Product): void { this.selectedProduct.set(product); }
+  protected closeProductDetails(): void { this.selectedProduct.set(null); }
 }

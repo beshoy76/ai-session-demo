@@ -1,3 +1,25 @@
+<!-- ─── Promo Strip ─── -->
+<div class="promo-strip">
+  <div class="promo-track">
+    <span>🚀 FREE SHIPPING on orders over $50</span>
+    <span class="promo-dot">✦</span>
+    <span>🔥 SUMMER SALE — Up to 40% OFF</span>
+    <span class="promo-dot">✦</span>
+    <span>✨ NEW ARRIVALS EVERY WEEK</span>
+    <span class="promo-dot">✦</span>
+    <span>💎 PREMIUM QUALITY GUARANTEED</span>
+    <span class="promo-dot">✦</span>
+    <span>🚀 FREE SHIPPING on orders over $50</span>
+    <span class="promo-dot">✦</span>
+    <span>🔥 SUMMER SALE — Up to 40% OFF</span>
+    <span class="promo-dot">✦</span>
+    <span>✨ NEW ARRIVALS EVERY WEEK</span>
+    <span class="promo-dot">✦</span>
+    <span>💎 PREMIUM QUALITY GUARANTEED</span>
+  </div>
+</div>
+
+<!-- ─── Header ─── -->
 <header class="store-header">
   <div class="header-container">
     <div class="brand">
@@ -28,127 +50,360 @@
       }
     </div>
 
-    <button id="cart-toggle-button" class="cart-trigger" (click)="toggleCart(true)" aria-label="Open shopping cart">
-      <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
-      @if (cartCount() > 0) {
-        <span class="cart-badge animate-scale-up">{{ cartCount() }}</span>
-      }
-    </button>
+    <div class="header-actions">
+      <button id="cart-toggle-button" class="cart-trigger" (click)="toggleCart(true)" aria-label="Open shopping cart">
+        <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        @if (cartCount() > 0) {
+          <span class="cart-badge">{{ cartCount() }}</span>
+        }
+      </button>
+    </div>
   </div>
 </header>
 
-<main class="store-content">
-  <!-- Hero Section -->
+<!-- ─── Navigation Bar ─── -->
+<nav class="main-nav">
+  <div class="nav-container">
+    <ul class="nav-links">
+      <li>
+        <a class="nav-link" [class.active]="activeNav() === 'home'" (click)="setActiveNav('home')">Home</a>
+      </li>
+      <li>
+        <a class="nav-link" [class.active]="activeNav() === 'products'" (click)="setActiveNav('products')">Products</a>
+      </li>
+      <li>
+        <a class="nav-link" [class.active]="activeNav() === 'collections'" (click)="setActiveNav('collections')">Collections</a>
+      </li>
+      <li>
+        <a class="nav-link" [class.active]="activeNav() === 'deals'" (click)="setActiveNav('deals')">
+          Deals <span class="nav-hot">HOT</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" [class.active]="activeNav() === 'about'" (click)="setActiveNav('about')">About</a>
+      </li>
+    </ul>
+    <div class="nav-contact">
+      <span>📞 1-800-AURA-SHOP</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Main Content ─── -->
+<main>
+
+  <!-- Hero -->
   <section class="hero-section">
-    <div class="hero-glow"></div>
-    <div class="hero-text-wrapper">
-      <span class="hero-tag">EXCLUSIVE SUMMER DROP</span>
-      <h2 class="hero-title">Refined Minimalism <br> For Daily Life</h2>
-      <p class="hero-subtitle">Meticulously designed lifestyle essentials blending clean Nordic design with state-of-the-art functionality.</p>
+    <div class="hero-shape hero-shape-1"></div>
+    <div class="hero-shape hero-shape-2"></div>
+    <div class="hero-shape hero-shape-3"></div>
+
+    <div class="hero-inner">
+      <div class="hero-text">
+        <span class="hero-eyebrow">✦ EXCLUSIVE SUMMER COLLECTION 2025</span>
+        <h2 class="hero-title">Discover
+          <span class="hero-gradient">Premium</span><br>Products
+        </h2>
+        <p class="hero-subtitle">Curated lifestyle essentials crafted for modern living. Elevate your everyday with our handpicked selection.</p>
+        <div class="hero-cta-row">
+          <button class="hero-btn-primary" (click)="setActiveNav('products')">Shop Now →</button>
+          <button class="hero-btn-outline" (click)="selectCategory('Electronics')">View Deals</button>
+        </div>
+        <div class="hero-trust">
+          <span>⭐ 4.9/5 Rating</span>
+          <span class="trust-dot">·</span>
+          <span>50K+ Customers</span>
+          <span class="trust-dot">·</span>
+          <span>Free Returns</span>
+        </div>
+      </div>
+
+      <div class="hero-cards">
+        <div class="hero-card hc-main float-slow">
+          <div class="hc-emoji">🎧</div>
+          <div class="hc-label">Premium Audio</div>
+          <div class="hc-price">From $149</div>
+        </div>
+        <div class="hero-card hc-secondary float-normal">
+          <div class="hc-emoji">⌚</div>
+          <div class="hc-label">Smart Wearables</div>
+          <div class="hc-price">From $189</div>
+        </div>
+        <div class="hero-card hc-accent float-reverse">
+          <div class="hc-emoji">🔥</div>
+          <div class="hc-label">Hot Deals</div>
+          <div class="hc-price">Up to 40% off</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <div class="categories-wrapper">
-      @for (category of categories(); track category) {
-        <button
-          [id]="'category-btn-' + category.toLowerCase()"
-          class="category-pill"
-          [class.active]="selectedCategory() === category"
-          (click)="selectCategory(category)"
-        >
-          {{ category }}
-        </button>
-      }
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">10K+</span>
+      <span class="stat-lbl">Products</span>
     </div>
-
-    <div class="sort-wrapper">
-      <label for="sort-dropdown" class="sort-label">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="21" y1="10" x2="7" y2="10"></line>
-          <line x1="21" y1="6" x2="3" y2="6"></line>
-          <line x1="21" y1="14" x2="11" y2="14"></line>
-          <line x1="21" y1="18" x2="15" y2="18"></line>
-        </svg>
-        Sort
-      </label>
-      <select id="sort-dropdown" [value]="sortBy()" (change)="onSortChange($event)" aria-label="Sort products">
-        <option value="featured">Featured</option>
-        <option value="price-low">Price: Low to High</option>
-        <option value="price-high">Price: High to Low</option>
-      </select>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">50K+</span>
+      <span class="stat-lbl">Happy Customers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">99%</span>
+      <span class="stat-lbl">Satisfaction</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">24/7</span>
+      <span class="stat-lbl">Live Support</span>
     </div>
   </div>
 
-  <!-- Active Filters Summary -->
-  @if (selectedCategory() !== 'All' || searchQuery()) {
-    <div class="active-filters-summary">
-      <span class="summary-text">
-        Showing {{ filteredProducts().length }} product{{ filteredProducts().length === 1 ? '' : 's' }}
-        @if (selectedCategory() !== 'All') { in <strong>{{ selectedCategory() }}</strong> }
-        @if (searchQuery()) { matching "<strong>{{ searchQuery() }}</strong>" }
-      </span>
-      <button class="reset-filters-link" (click)="selectedCategory.set('All'); searchQuery.set('')">
-        Clear filters
-      </button>
+  <!-- Ad Banner -->
+  <div class="ad-banner">
+    <div class="ad-content">
+      <span class="ad-eyebrow">⚡ LIMITED TIME OFFER</span>
+      <h3 class="ad-title">Summer Sale is Live! 🎉</h3>
+      <p class="ad-sub">Up to 40% off on premium electronics, fashion & home goods. Don't miss out!</p>
+      <button class="ad-btn" (click)="selectCategory('Electronics')">Shop the Sale →</button>
     </div>
-  }
+    <div class="ad-emojis">
+      <span class="ad-emoji e1">📱</span>
+      <span class="ad-emoji e2">👟</span>
+      <span class="ad-emoji e3">🎮</span>
+      <span class="ad-emoji e4">💡</span>
+    </div>
+  </div>
 
-  <!-- Products Grid -->
-  @if (filteredProducts().length > 0) {
-    <div class="products-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <article
-          [id]="'product-card-' + product.id"
-          class="product-card"
-          (click)="openProductDetails(product)"
-        >
-          <!-- Image Section -->
-          <div class="product-card-image-wrapper">
-            <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" class="product-card-image" />
-            <button
-              [id]="'quick-add-btn-' + product.id"
-              class="quick-add-btn"
-              (click)="addToCart(product, $event)"
-              aria-label="Add to cart"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              <span>Add to Cart</span>
-            </button>
-          </div>
-
-          <!-- Description Section -->
-          <div class="product-card-info">
-            <span class="product-card-category">{{ product.categoryName }}</span>
-            <h3 class="product-card-title">{{ product.name }}</h3>
-            <div class="product-card-footer">
-              <span class="product-card-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
-              <span class="view-details-txt">View details →</span>
-            </div>
-          </div>
-        </article>
+  <!-- Products Section -->
+  <section class="products-section" id="products-section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Our Products</h2>
+        <p class="section-sub">Handpicked for quality and style</p>
+      </div>
+      @if (!isLoading()) {
+        <span class="product-count-pill">{{ products().length }} items</span>
       }
     </div>
-  } @else {
-    <!-- Empty State -->
-    <div class="empty-state">
-      <div class="empty-icon">🔍</div>
-      <h3 class="empty-title">No products found</h3>
-      <p class="empty-description">We couldn't find any products matching your current filters.</p>
-      <button class="empty-reset-btn" (click)="selectedCategory.set('All'); searchQuery.set('')">Reset Filters</button>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="categories-wrapper">
+        @for (category of categories(); track category) {
+          <button
+            [id]="'category-btn-' + category.toLowerCase()"
+            class="category-pill"
+            [class.active]="selectedCategory() === category"
+            (click)="selectCategory(category)"
+          >{{ category }}</button>
+        }
+      </div>
+      <div class="sort-wrapper">
+        <label for="sort-dropdown" class="sort-label">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="21" y1="10" x2="7" y2="10"></line>
+            <line x1="21" y1="6" x2="3" y2="6"></line>
+            <line x1="21" y1="14" x2="11" y2="14"></line>
+            <line x1="21" y1="18" x2="15" y2="18"></line>
+          </svg>
+          Sort
+        </label>
+        <select id="sort-dropdown" [value]="sortBy()" (change)="onSortChange($event)">
+          <option value="featured">Featured</option>
+          <option value="price-low">Price: Low → High</option>
+          <option value="price-high">Price: High → Low</option>
+        </select>
+      </div>
     </div>
-  }
+
+    <!-- Active Filters -->
+    @if (selectedCategory() !== 'All' || searchQuery()) {
+      <div class="active-filters-summary">
+        <span>
+          Showing <strong>{{ filteredProducts().length }}</strong> result{{ filteredProducts().length === 1 ? '' : 's' }}
+          @if (selectedCategory() !== 'All') { in <strong>{{ selectedCategory() }}</strong>}
+          @if (searchQuery()) { for "<strong>{{ searchQuery() }}</strong>"}
+        </span>
+        <button class="reset-filters-link" (click)="selectedCategory.set('All'); searchQuery.set('')">✕ Clear</button>
+      </div>
+    }
+
+    <!-- Skeleton Loading -->
+    @if (isLoading()) {
+      <div class="products-grid">
+        @for (n of skeletonItems; track n) {
+          <div class="skeleton-card">
+            <div class="skeleton-img shimmer"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line sk-short shimmer"></div>
+              <div class="skeleton-line shimmer"></div>
+              <div class="skeleton-line sk-med shimmer"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (filteredProducts().length > 0) {
+      <div class="products-grid">
+        @for (product of filteredProducts(); track product.id; let i = $index) {
+          <article
+            [id]="'product-card-' + product.id"
+            class="product-card card-animate"
+            [style.animation-delay]="(i * 0.07) + 's'"
+            (click)="openProductDetails(product)"
+          >
+            <div class="product-card-image-wrapper">
+              <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" class="product-card-image" />
+              <div class="card-overlay"></div>
+              <button
+                [id]="'quick-add-btn-' + product.id"
+                class="quick-add-btn"
+                (click)="addToCart(product, $event)"
+                aria-label="Add to cart"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add to Cart
+              </button>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-category">{{ product.categoryName }}</span>
+              <h3 class="product-card-title">{{ product.name }}</h3>
+              <p class="product-card-desc">{{ product.description }}</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+                <span class="view-details-txt">View →</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>No products found</h3>
+        <p>Try adjusting your search or filters.</p>
+        <button class="empty-reset-btn" (click)="selectedCategory.set('All'); searchQuery.set('')">Reset Filters</button>
+      </div>
+    }
+  </section>
+
+  <!-- Features Strip -->
+  <div class="features-strip">
+    <div class="feature-item">
+      <span class="feature-icon">🚚</span>
+      <div class="feature-text">
+        <strong>Free Shipping</strong>
+        <span>Orders over $50</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🔄</span>
+      <div class="feature-text">
+        <strong>30-Day Returns</strong>
+        <span>No questions asked</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🔒</span>
+      <div class="feature-text">
+        <strong>Secure Payment</strong>
+        <span>256-bit SSL encryption</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">💬</span>
+      <div class="feature-text">
+        <strong>24/7 Support</strong>
+        <span>Always here for you</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter-section">
+    <div class="nl-shape nl-s1"></div>
+    <div class="nl-shape nl-s2"></div>
+    <div class="newsletter-content">
+      <span class="nl-eyebrow">📧 STAY IN THE LOOP</span>
+      <h3 class="nl-title">Get Exclusive Deals First</h3>
+      <p class="nl-sub">Join 50,000+ subscribers. Never miss a sale or new arrival.</p>
+      <div class="nl-form">
+        <input type="email" class="nl-input" placeholder="Enter your email address..." />
+        <button class="nl-btn">Subscribe</button>
+      </div>
+      <p class="nl-note">No spam, ever. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
 </main>
 
-<!-- Cart Sidebar Drawer -->
+<!-- ─── Footer ─── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-brand">
+        <span>💎</span>
+        <span class="footer-brand-name">AURA</span>
+      </div>
+      <p class="footer-desc">Premium lifestyle products curated for modern, intentional living.</p>
+      <div class="footer-social">
+        <a class="social-btn" href="#" aria-label="Instagram">📷</a>
+        <a class="social-btn" href="#" aria-label="Twitter">🐦</a>
+        <a class="social-btn" href="#" aria-label="Facebook">👍</a>
+        <a class="social-btn" href="#" aria-label="YouTube">▶️</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-col-title">Shop</h4>
+      <ul class="footer-links">
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Best Sellers</a></li>
+        <li><a href="#">Sale Items</a></li>
+        <li><a href="#">Collections</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-col-title">Help</h4>
+      <ul class="footer-links">
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns & Exchanges</a></li>
+        <li><a href="#">Track Your Order</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-col-title">Company</h4>
+      <ul class="footer-links">
+        <li><a href="#">About AURA</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 AURA. All rights reserved. Built with ♥ for premium shoppers.</p>
+    <div class="footer-pay">
+      <span title="Credit Card">💳</span>
+      <span title="Bank Transfer">🏦</span>
+      <span title="Mobile Pay">📱</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── Cart Sidebar ─── -->
 <div
   id="cart-drawer-overlay"
   class="cart-drawer-overlay"
@@ -157,7 +412,7 @@
 >
   <div class="cart-drawer" (click)="$event.stopPropagation()">
     <div class="cart-drawer-header">
-      <h2>Shopping Cart</h2>
+      <h2>🛒 Shopping Cart</h2>
       <button id="close-cart-btn" class="close-cart-btn" (click)="toggleCart(false)" aria-label="Close cart">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -171,24 +426,21 @@
         @for (item of cart(); track item.product.id) {
           <div class="cart-item">
             <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image" />
-
             <div class="cart-item-details">
               <div class="cart-item-meta">
                 <span class="cart-item-category">{{ item.product.categoryName }}</span>
                 <h4 class="cart-item-title">{{ item.product.name }}</h4>
               </div>
-
               <div class="cart-item-controls">
                 <div class="quantity-selector">
-                  <button class="qty-btn" (click)="updateQuantity(item.product.id, -1)" aria-label="Decrease quantity">-</button>
+                  <button class="qty-btn" (click)="updateQuantity(item.product.id, -1)">−</button>
                   <span class="qty-val">{{ item.quantity }}</span>
-                  <button class="qty-btn" (click)="updateQuantity(item.product.id, 1)" aria-label="Increase quantity">+</button>
+                  <button class="qty-btn" (click)="updateQuantity(item.product.id, 1)">+</button>
                 </div>
                 <span class="cart-item-subtotal">{{ (item.product.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}</span>
               </div>
             </div>
-
-            <button class="cart-item-remove" (click)="removeFromCart(item.product.id)" aria-label="Remove item">
+            <button class="cart-item-remove" (click)="removeFromCart(item.product.id)" aria-label="Remove">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -197,16 +449,14 @@
           </div>
         }
       </div>
-
       <div class="cart-drawer-footer">
         <div class="cart-summary-row">
           <span>Subtotal</span>
           <strong class="cart-summary-total">{{ cartTotal() | currency:'USD':'symbol':'1.2-2' }}</strong>
         </div>
         <p class="cart-shipping-note">Taxes and shipping calculated at checkout.</p>
-
         <div class="cart-actions">
-          <button class="checkout-btn">Proceed to Checkout</button>
+          <button class="checkout-btn">Proceed to Checkout →</button>
           <button class="clear-cart-btn-link" (click)="clearCart()">Clear Cart</button>
         </div>
       </div>
@@ -214,48 +464,47 @@
       <div class="cart-empty-state">
         <span class="cart-empty-icon">🛒</span>
         <h3>Your cart is empty</h3>
-        <p>Start adding premium products to make it full!</p>
+        <p>Start adding premium products!</p>
         <button class="cart-shop-btn" (click)="toggleCart(false)">Continue Shopping</button>
       </div>
     }
   </div>
 </div>
 
-<!-- Product Details Modal Dialog -->
+<!-- ─── Product Details Modal ─── -->
 @if (selectedProduct(); as product) {
   <div id="product-details-modal" class="modal-overlay" (click)="closeProductDetails()">
     <div class="modal-container" (click)="$event.stopPropagation()">
-      <button class="modal-close-btn" (click)="closeProductDetails()" aria-label="Close product details">
+      <button class="modal-close-btn" (click)="closeProductDetails()" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-
       <div class="modal-grid">
-        <!-- Gallery -->
         <div class="modal-gallery">
           <img [src]="product.imageUrl" [alt]="product.name" class="modal-main-image" />
+          <div class="modal-gallery-glow"></div>
         </div>
-
-        <!-- Info -->
         <div class="modal-info">
           <span class="modal-category">{{ product.categoryName }}</span>
           <h2 class="modal-title">{{ product.name }}</h2>
-
           <div class="modal-price-row">
             <span class="modal-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+            <span class="modal-stock-badge">✓ In Stock</span>
           </div>
-
           <p class="modal-description">{{ product.description }}</p>
-
           <div class="modal-actions">
             <button
               id="modal-add-to-cart-btn"
               class="modal-add-to-cart-btn"
               (click)="addToCart(product); closeProductDetails()"
-            >
-              Add to Cart
+            >Add to Cart</button>
+            <button class="modal-wishlist-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Wishlist
             </button>
           </div>
         </div>
