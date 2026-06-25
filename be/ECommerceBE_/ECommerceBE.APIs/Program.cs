@@ -1,3 +1,7 @@
+using ECommerceBE.Core.Interfaces;
+using ECommerceBE.Core.Services;
+using ECommerceBE.Infrastructure.Interfaces;
+using ECommerceBE.Infrastructure.Repositories;
 using ECommerceBE.Presistance.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +21,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// (2)/(4) Order repository and service registration
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

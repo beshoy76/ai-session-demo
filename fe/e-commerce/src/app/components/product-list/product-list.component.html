@@ -86,6 +86,9 @@
       <li>
         <a class="nav-link" [class.active]="activeNav() === 'about'" (click)="setActiveNav('about')">About</a>
       </li>
+      <li>
+        <a class="nav-link" (click)="goToCheckout()">Checkout</a>
+      </li>
     </ul>
     <div class="nav-contact">
       <span>📞 1-800-AURA-SHOP</span>
@@ -456,7 +459,7 @@
         </div>
         <p class="cart-shipping-note">Taxes and shipping calculated at checkout.</p>
         <div class="cart-actions">
-          <button class="checkout-btn">Proceed to Checkout →</button>
+          <button class="checkout-btn" (click)="goToCheckout()">Proceed to Checkout →</button>
           <button class="clear-cart-btn-link" (click)="clearCart()">Clear Cart</button>
         </div>
       </div>
