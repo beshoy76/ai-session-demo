@@ -1,0 +1,250 @@
+<!-- Checkout page: shipping form + conditional card fields + order summary -->
+
+<!-- ── Success State ── -->
+@if (orderId()) {
+  <div class="success-screen">
+    <mat-card class="success-card">
+      <mat-card-content>
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h1>Order Placed!</h1>
+        <p class="success-sub">Thank you for your purchase.</p>
+        <div class="order-id-box">
+          <span class="order-id-label">Order ID</span>
+          <code class="order-id-value">{{ orderId() }}</code>
+        </div>
+        <button mat-raised-button color="primary" class="back-btn" (click)="backToShop()">
+          Continue Shopping
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+
+<!-- ── Checkout Form ── -->
+@if (!orderId()) {
+  <div class="checkout-page">
+
+    <!-- Header -->
+    <div class="checkout-header">
+      <button mat-icon-button (click)="backToShop()" aria-label="Back to shop">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="page-title">💎 Checkout</h1>
+    </div>
+
+    <div class="checkout-layout">
+
+      <!-- Left column: form -->
+      <div class="form-column">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- Section: Customer Info -->
+          <mat-card class="form-card">
+            <mat-card-header>
+              <mat-card-title>Customer Information</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="field-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Full Name</mat-label>
+                  <input matInput formControlName="customerName" placeholder="John Doe" />
+                  @if (form.get('customerName')?.hasError('required') && form.get('customerName')?.touched) {
+                    <mat-error>Full name is required.</mat-error>
+                  }
+                  @if (form.get('customerName')?.hasError('minlength') && form.get('customerName')?.touched) {
+                    <mat-error>Name must be at least 2 characters.</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="field-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email Address</mat-label>
+                  <input matInput type="email" formControlName="customerEmail" placeholder="you@example.com" />
+                  @if (form.get('customerEmail')?.hasError('required') && form.get('customerEmail')?.touched) {
+                    <mat-error>Email is required.</mat-error>
+                  }
+                  @if (form.get('customerEmail')?.hasError('email') && form.get('customerEmail')?.touched) {
+                    <mat-error>Enter a valid email address.</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Section: Shipping Details -->
+          <mat-card class="form-card">
+            <mat-card-header>
+              <mat-card-title>Shipping Details</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Street Address</mat-label>
+                <input matInput formControlName="shippingStreet" placeholder="123 Main St" />
+                @if (form.get('shippingStreet')?.hasError('required') && form.get('shippingStreet')?.touched) {
+                  <mat-error>Street address is required.</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="two-col">
+                <mat-form-field appearance="outline">
+                  <mat-label>City</mat-label>
+                  <input matInput formControlName="shippingCity" />
+                  @if (form.get('shippingCity')?.hasError('required') && form.get('shippingCity')?.touched) {
+                    <mat-error>City is required.</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>State / Province</mat-label>
+                  <input matInput formControlName="shippingState" />
+                  @if (form.get('shippingState')?.hasError('required') && form.get('shippingState')?.touched) {
+                    <mat-error>State is required.</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="two-col">
+                <mat-form-field appearance="outline">
+                  <mat-label>Country</mat-label>
+                  <input matInput formControlName="shippingCountry" />
+                  @if (form.get('shippingCountry')?.hasError('required') && form.get('shippingCountry')?.touched) {
+                    <mat-error>Country is required.</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>ZIP / Postal Code</mat-label>
+                  <input matInput formControlName="shippingZipCode" placeholder="e.g. 10001" />
+                  @if (form.get('shippingZipCode')?.hasError('required') && form.get('shippingZipCode')?.touched) {
+                    <mat-error>ZIP code is required.</mat-error>
+                  }
+                  @if (form.get('shippingZipCode')?.hasError('pattern') && form.get('shippingZipCode')?.touched) {
+                    <mat-error>Enter a valid ZIP code (4–10 digits).</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Section: Payment Method -->
+          <mat-card class="form-card">
+            <mat-card-header>
+              <mat-card-title>Payment Method</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-radio-group formControlName="paymentMethod" class="payment-radio-group">
+                <mat-radio-button value="cod">
+                  <span class="radio-label">🚚 Cash on Delivery</span>
+                </mat-radio-button>
+                <mat-radio-button value="card">
+                  <span class="radio-label">💳 Pay by Card</span>
+                </mat-radio-button>
+              </mat-radio-group>
+
+              <!-- Card fields — only rendered when Card is selected -->
+              @if (isCard) {
+                <mat-divider class="card-divider"></mat-divider>
+                <div class="card-fields">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Cardholder Name</mat-label>
+                    <input matInput formControlName="cardHolder" placeholder="Name as on card" />
+                    @if (form.get('cardHolder')?.hasError('required') && form.get('cardHolder')?.touched) {
+                      <mat-error>Cardholder name is required.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Card Number</mat-label>
+                    <input matInput formControlName="cardNumber" placeholder="16-digit number" maxlength="16" />
+                    @if (form.get('cardNumber')?.hasError('required') && form.get('cardNumber')?.touched) {
+                      <mat-error>Card number is required.</mat-error>
+                    }
+                    @if (form.get('cardNumber')?.hasError('pattern') && form.get('cardNumber')?.touched) {
+                      <mat-error>Enter a valid 16-digit card number.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <div class="two-col">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Expiry (MM/YY)</mat-label>
+                      <input matInput formControlName="cardExpiry" placeholder="MM/YY" maxlength="5" />
+                      @if (form.get('cardExpiry')?.hasError('required') && form.get('cardExpiry')?.touched) {
+                        <mat-error>Expiry date is required.</mat-error>
+                      }
+                      @if (form.get('cardExpiry')?.hasError('pattern') && form.get('cardExpiry')?.touched) {
+                        <mat-error>Use MM/YY format.</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>CVV</mat-label>
+                      <input matInput formControlName="cardCvv" placeholder="3 or 4 digits" maxlength="4" type="password" />
+                      @if (form.get('cardCvv')?.hasError('required') && form.get('cardCvv')?.touched) {
+                        <mat-error>CVV is required.</mat-error>
+                      }
+                      @if (form.get('cardCvv')?.hasError('pattern') && form.get('cardCvv')?.touched) {
+                        <mat-error>Enter a valid 3 or 4 digit CVV.</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Error message from backend -->
+          @if (errorMessage()) {
+            <div class="error-banner">
+              <mat-icon>error_outline</mat-icon>
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <!-- Submit -->
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="submit-btn"
+            [disabled]="isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+              Placing Order...
+            } @else {
+              Place Order →
+            }
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Right column: order summary -->
+      <div class="summary-column">
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-card-title>Order Summary</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @for (item of cartItems; track item.product.id) {
+              <div class="summary-item">
+                <img [src]="item.product.imageUrl" [alt]="item.product.name" class="summary-img" />
+                <div class="summary-item-info">
+                  <span class="summary-name">{{ item.product.name }}</span>
+                  <span class="summary-qty">Qty: {{ item.quantity }}</span>
+                </div>
+                <span class="summary-price">
+                  {{ (item.product.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}
+                </span>
+              </div>
+              <mat-divider></mat-divider>
+            }
+            <div class="summary-total-row">
+              <span>Total</span>
+              <strong>{{ cartTotal | currency:'USD':'symbol':'1.2-2' }}</strong>
+            </div>
+            <p class="summary-note">Prices recalculated on the server at checkout.</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+}

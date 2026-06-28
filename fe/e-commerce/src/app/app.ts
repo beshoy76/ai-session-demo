@@ -1,12 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { ProductListComponent } from './components/product-list/product-list.component';
+// Root component — delegates rendering entirely to the router outlet
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [ProductListComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  imports: [RouterOutlet],
+  template: '<router-outlet />',
+  styles: []
 })
-export class App {
-  protected readonly title = signal('e-commerce');
-}
+export class App {}

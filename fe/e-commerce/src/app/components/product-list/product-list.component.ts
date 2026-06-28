@@ -2,6 +2,7 @@ import { Component, signal, computed, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 
 export interface Product {
@@ -27,6 +28,7 @@ export interface CartItem {
 })
 export class ProductListComponent {
   private productService = inject(ProductService);
+  private router = inject(Router);
 
   private productsLoaded = signal(false);
 
@@ -135,6 +137,14 @@ export class ProductListComponent {
 
   protected clearCart(): void { this.cart.set([]); }
   protected toggleCart(open: boolean): void { this.isCartOpen.set(open); }
+
+  // Navigate to /checkout, passing cart state via router navigation extras
+  protected goToCheckout(): void {
+    this.toggleCart(false);
+    this.router.navigate(['/checkout'], {
+      state: { cart: this.cart(), total: this.cartTotal() }
+    });
+  }
   protected openProductDetails(product: Product): void { this.selectedProduct.set(product); }
   protected closeProductDetails(): void { this.selectedProduct.set(null); }
 }
