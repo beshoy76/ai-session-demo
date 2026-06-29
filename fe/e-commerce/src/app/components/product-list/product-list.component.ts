@@ -3,6 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
+import { CheckoutComponent } from '../checkout/checkout.component';
 
 export interface Product {
   id: string;
@@ -21,7 +22,7 @@ export interface CartItem {
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, CheckoutComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
@@ -137,4 +138,20 @@ export class ProductListComponent {
   protected toggleCart(open: boolean): void { this.isCartOpen.set(open); }
   protected openProductDetails(product: Product): void { this.selectedProduct.set(product); }
   protected closeProductDetails(): void { this.selectedProduct.set(null); }
+
+  // Checkout
+  protected readonly isCheckoutOpen = signal(false);
+
+  protected openCheckout(): void {
+    this.isCartOpen.set(false);
+    this.isCheckoutOpen.set(true);
+  }
+
+  protected closeCheckout(): void {
+    this.isCheckoutOpen.set(false);
+  }
+
+  protected onOrderCompleted(): void {
+    this.clearCart();
+  }
 }

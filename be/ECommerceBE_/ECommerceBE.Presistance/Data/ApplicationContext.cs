@@ -16,6 +16,8 @@ public class ApplicationContext : DbContext
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
 
     public new async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
