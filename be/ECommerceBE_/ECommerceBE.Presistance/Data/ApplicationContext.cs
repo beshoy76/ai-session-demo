@@ -35,7 +35,6 @@ public class ApplicationContext : DbContext
                     entry.State = EntityState.Modified;
                     break;
                 case EntityState.Unchanged:
-                    string test = "";
                     break;
             }
 
